@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "ProjectMap": {
+    "d54c3bfb-1c67-4757-bc55-2e24b8318ded": {
+      "ProjectGuid": "d54c3bfb-1c67-4757-bc55-2e24b8318ded",
+      "DisplayName": "RealTimeRendering",
+      "ColorIndex": 0
+    }
+  },
+  "NextColorIndex": 1
+}
