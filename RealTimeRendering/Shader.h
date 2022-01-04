@@ -7,6 +7,13 @@
 #include "Mesh.h"
 #include "Material.h"
 
+enum LightReturn_e
+{
+    ALBEDO,
+    DIFFUSAL,
+    BLINNPHONG
+};
+
 typedef struct Scene_s Scene;
 
 /// @brief Structure représentant les données globales fournies au vertex shader.
@@ -55,10 +62,10 @@ typedef struct VShaderOut_s
     // Pour les bonus
 
     /// @brief Position du sommet dans le référentiel monde.
-    //Vec3  worldPos;
+    Vec3  worldPos;
 
     /// @brief Tangente associée au sommet exprimée dans le référentiel monde.
-    //Vec3  tangent;
+    Vec3  tangent;
 
 } VShaderOut;
 
@@ -92,13 +99,13 @@ typedef struct FShaderIn_s
 
     /// @brief Position associée au pixel exprimée dans le référentiel monde.
     /// Nécessaire pour la lumière spéculaire de Blinn-Phong
-    //Vec3 worldPos;
+    Vec3 worldPos;
 
     /// @brief Tangente associée au pixel exprimée dans le référentiel monde.
     /// Nécessaire pour l'utilisation d'une "normal map".
     /// Le vecteur est obtenu par interpolation, donc n'est pas nécessairement unitaire
     /// ou perpendiculaire à la normale.
-    //Vec3 tangent;
+    Vec3 tangent;
 } FShaderIn;
 
 typedef VShaderOut VertexShader(VShaderIn *in, VShaderGlobals *globals);
@@ -108,4 +115,5 @@ VShaderOut VertexShader_Base(VShaderIn *in, VShaderGlobals *globals);
 
 Vec4 FragmentShader_Base(FShaderIn *in, FShaderGlobals *globals);
 
+void changeReturnLight(int input);
 #endif

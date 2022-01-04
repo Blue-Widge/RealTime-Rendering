@@ -1,2 +1,5 @@
-﻿  Matrix.c
+﻿  Shader.c
+  main.c
+D:\Codes\RealTimeRendering\RealTimeRendering_Basecode\RealTimeRendering\main.c(55,10): warning C4101: 'meshCenter': unreferenced local variable
+  Generating Code...
   RealTimeRendering.vcxproj -> D:\Codes\RealTimeRendering\RealTimeRendering_Basecode\Bin\RealTimeRendering.exe

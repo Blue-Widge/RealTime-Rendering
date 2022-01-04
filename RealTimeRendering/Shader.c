@@ -3,6 +3,8 @@
 #include "Graphics.h"
 #include "Tools.h"
 
+enum LightReturn_e lightReturn = BLINNPHONG;
+
 VShaderOut VertexShader_Base(VShaderIn *in, VShaderGlobals *globals)
 {
     // Le vertex shader est une fonction exécutée pour chacun des sommets
@@ -31,6 +33,8 @@ VShaderOut VertexShader_Base(VShaderIn *in, VShaderGlobals *globals)
 
     // Pour le modèle de Blinn-Phong, il faut calculer la position du sommet
     // dans le référentiel monde et ajouter l'information au VShaderOut
+    
+
 
     // Définit la sortie du vertex shader
     out.clipPos = Vec3_From4(vertexClipSpace);  // OBLIGATOIRE (ne pas modifier)
@@ -87,19 +91,48 @@ Vec4 FragmentShader_Base(FShaderIn *in, FShaderGlobals *globals)
     // Application de la lumière ambiante à l'albedo
     albedo = Vec3_Mul(albedo, ambiant);
 
-    // TODO
-    // Pour la lumière diffuse, il faut utiliser la normale.
-   
-    float lightIntensity = Vec3_Dot(lightVector, Vec3_Normalize(normal));
+ // TODO
+ // 
+    switch (lightReturn)
+    {
+    case ALBEDO:
+        return Vec4_From3(albedo, 1.f);
+    break;
+    case DIFFUSAL:
+        // Pour la lumière diffuse, il faut utiliser la normale.
+        normal = Vec3_Normalize(normal);
+        float lightIntensity = Vec3_Dot(lightVector, normal);
+        return Vec4_From3(Vec3_Mul(albedo, Vec3_Scale(lightColor, lightIntensity)), 1.0f);
+    break;
+    case BLINNPHONG:
 
-    return Vec4_From3(Vec3_Mul(albedo,Vec3_Scale(lightColor, lightIntensity)), 1.0f);
-    // Pour la lumière spéculaire de Blinn-Phong, il faut :
-    // - récupérer l'interpolation de la position dans le monde du pixel ;
-    // - calculer le vecteur de vue, le vecteur moitié
-    // Vous devez donc modifier le vertex shader, puis modifier la fonction
-    // Graphics_RenderTriangle() pour initialiser l'interpolation puis pour
-    // calculer l'interpolation.
-    // Utilisez les macros VEC3_INIT_INTERPOLATION() et VEC3_INTERPOLATE().
+        // Pour la lumière spéculaire de Blinn-Phong, il faut :
+        // - récupérer l'interpolation de la position dans le monde du pixel ;
+        // - calculer le vecteur de vue, le vecteur moitié
+        // Vous devez donc modifier le vertex shader, puis modifier la fonction
+        // Graphics_RenderTriangle() pour initialiser l'interpolation puis pour
+        // calculer l'interpolation.
+        // Utilisez les macros VEC3_INIT_INTERPOLATION() et VEC3_INTERPOLATE().
+
+        float lambert = Float_Clamp01(Vec3_Dot(normal, lightVector));
+        Vec3 diffuseLight = Vec3_Scale(lightColor, lambert);
+
+        Vec3 V = Vec3_Normalize(Vec3_Sub(globals->cameraPos, in->worldPos));
+        Vec3 H = Vec3_Normalize(Vec3_Add(lightVector, V));
+
+        float specularLight = Float_Clamp01(Vec3_Dot(H, normal)) * (lambert > 0);
+        int gloss = 10;
+        float specularExponent = powf(2, gloss * 11) + 2;
+        specularLight = powf(specularLight, specularExponent);
+        Vec3 specularVec = Vec3_Scale(lightColor, specularLight);
+
+        Vec3 light = Vec3_Add(Vec3_Mul(diffuseLight, albedo), specularVec);
+        return Vec4_From3(light, 1.f);
+        break;
+    default : 
+        return Vec4_From3(albedo, 1.f);
+    break;
+    }
 
 #endif
 
@@ -121,4 +154,9 @@ Vec4 FragmentShader_Base(FShaderIn *in, FShaderGlobals *globals)
 
     // Retourne la couleur (albedo) associée au pixel dans la texture.
     return Vec4_From3(albedo, 1.0f);
+}
+
+void changeLightReturn(int input)
+{
+    lightReturn = input;
 }

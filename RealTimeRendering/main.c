@@ -76,12 +76,14 @@ int main(int argc, char *argv[])
 
     float fpsAccu = 0.0f;
     int frameCount = 0;
+
+
+    float rotatingSpeed = 0.f;
     bool quit = false;
     while (!quit)
     {
         SDL_Event evt;
         SDL_Scancode scanCode;
-
         // Met à jour le temps global
         Timer_Update(g_time);
 
@@ -106,6 +108,29 @@ int main(int argc, char *argv[])
                 case SDL_SCANCODE_SPACE:
                     Scene_SetWireframe(scene, !Scene_GetWireframe(scene));
                     break;
+                case SDL_SCANCODE_KP_PLUS:
+                    scene->m_lightColor = Vec3_Add(scene->m_lightColor, Vec3_One);
+                    break;
+                case SDL_SCANCODE_KP_MINUS:
+                    scene->m_lightColor = Vec3_Sub(scene->m_lightColor, Vec3_One);
+                    if (scene->m_lightColor.x < 0.f || scene->m_lightColor.y < 0.f || scene->m_lightColor.z < 0.f)
+                        scene->m_lightColor = Vec3_Zero;
+                    break;
+                case SDL_SCANCODE_KP_0:
+                    changeLightReturn(ALBEDO);
+                    break;
+                case SDL_SCANCODE_KP_1:
+                    changeLightReturn(DIFFUSAL);
+                    break;
+                case SDL_SCANCODE_KP_2:
+                    changeLightReturn(BLINNPHONG);
+                    break;
+                case SDL_SCANCODE_RIGHT:
+                    rotatingSpeed -= 0.5f;
+                    break;
+                case SDL_SCANCODE_LEFT:
+                    rotatingSpeed += 0.5f;
+                    break;
                 default:
                     break;
                 }
@@ -117,7 +142,7 @@ int main(int argc, char *argv[])
         }
 
         // Calcule la rotation de la caméra
-        angleY -= 360.f / 40.f * Timer_GetDelta(g_time);
+        angleY -= rotatingSpeed * (360.f / 40.f * Timer_GetDelta(g_time));
 
         // Calcule la matrice locale de la caméra
         Mat4 cameraModel = Mat4_Identity;

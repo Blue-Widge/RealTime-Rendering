@@ -1,0 +1,6 @@
+﻿cl : command line warning D9035: option 'Gm' has been deprecated and will be removed in a future release
+  main.c
+D:\Codes\RealTimeRendering\RealTimeRendering_Basecode\RealTimeRendering\main.c(120,38): warning C4013: 'changeLightReturn' undefined; assuming extern returning int
+D:\Codes\RealTimeRendering\RealTimeRendering_Basecode\RealTimeRendering\main.c(55,10): warning C4101: 'meshCenter': unreferenced local variable
+  LINK : /LTCG specified but no code generation required; remove /LTCG from the link command line to improve linker performance
+  RealTimeRendering.vcxproj -> D:\Codes\RealTimeRendering\RealTimeRendering_Basecode\Bin\RealTimeRendering.exe
