@@ -184,8 +184,8 @@ void Renderer_Update(Renderer *renderer)
 {
     SDL_Texture *texture = renderer->m_streamTex;
     Uint32 *pixels = renderer->m_pixels;
-
     SDL_UpdateTexture(texture, NULL, pixels, renderer->m_width * sizeof (Uint32));
     SDL_RenderCopy(renderer->m_rendererSDL, texture, NULL, NULL);
+    
     SDL_RenderPresent(renderer->m_rendererSDL);
 }

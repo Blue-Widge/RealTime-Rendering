@@ -1,5 +1,4 @@
-﻿  Shader.c
-  main.c
-D:\Codes\RealTimeRendering\RealTimeRendering_Basecode\RealTimeRendering\main.c(55,10): warning C4101: 'meshCenter': unreferenced local variable
-  Generating Code...
+﻿  main.c
+D:\Codes\RealTimeRendering\RealTimeRendering_Basecode\RealTimeRendering\main.c(56,10): warning C4101: 'meshCenter': unreferenced local variable
+  LINK : D:\Codes\RealTimeRendering\RealTimeRendering_Basecode\Bin\RealTimeRendering.exe not found or not built by the last incremental link; performing full link
   RealTimeRendering.vcxproj -> D:\Codes\RealTimeRendering\RealTimeRendering_Basecode\Bin\RealTimeRendering.exe

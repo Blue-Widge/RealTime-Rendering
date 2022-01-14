@@ -46,7 +46,7 @@ Scene *Scene_New(Window *window)
     // Définit les lumières
     Scene_SetLightDirection(scene, Vec3_Set(0.5, 1.0, 0.5));
     Scene_SetLightColor(scene, Vec3_Set(1.f, 1.f, 1.f));
-    Scene_SetAmbiantColor(scene, Vec3_Set(1.f, 1.f, 1.f));
+    Scene_SetAmbiantColor(scene, Vec3_Set(0.5f, 0.5f, 0.5f));
 
     // Définit les shaders par défaut
     scene->m_defaultVShader = VertexShader_Base;

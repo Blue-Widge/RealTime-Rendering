@@ -20,7 +20,6 @@ Material *Material_LoadMTL(Mesh *mesh, char *path, char *fileName, int *count)
     long size = 0;
     fileBuffer = Buffer_GetFromFile(path, fileName, &size);
     if (!fileBuffer) { assert(false); goto ERROR_LABEL; }
-
     // Alloue la ligne
     curLine = (char *)calloc(lineCapacity, sizeof(char));
     if (!curLine) goto ERROR_LABEL;

@@ -116,18 +116,21 @@ Vec4 FragmentShader_Base(FShaderIn *in, FShaderGlobals *globals)
 
         float lambert = Float_Clamp01(Vec3_Dot(normal, lightVector));
         Vec3 diffuseLight = Vec3_Scale(lightColor, lambert);
+        diffuseLight = Vec3_Mul(diffuseLight, ambiant);
 
         Vec3 V = Vec3_Normalize(Vec3_Sub(globals->cameraPos, in->worldPos));
         Vec3 H = Vec3_Normalize(Vec3_Add(lightVector, V));
 
         float specularLight = Float_Clamp01(Vec3_Dot(H, normal)) * (lambert > 0);
-        int gloss = 10;
+        float gloss = 0.7f;
         float specularExponent = powf(2, gloss * 11) + 2;
         specularLight = powf(specularLight, specularExponent);
         Vec3 specularVec = Vec3_Scale(lightColor, specularLight);
 
         Vec3 light = Vec3_Add(Vec3_Mul(diffuseLight, albedo), specularVec);
         return Vec4_From3(light, 1.f);
+        break;
+    case NORMAL_MAP:
         break;
     default : 
         return Vec4_From3(albedo, 1.f);

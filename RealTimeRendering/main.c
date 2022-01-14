@@ -10,6 +10,7 @@
 #include "Tools.h"
 #include "Mesh.h"
 #include "Material.h"
+#include "objectActions.h"
 
 int main(int argc, char *argv[])
 {
@@ -60,33 +61,46 @@ int main(int argc, char *argv[])
     float zSize = fabsf(meshMax.z - meshMin.z);
     float objectSize = fmaxf(xSize, fmaxf(ySize, zSize));
     float scale = 3.0f / objectSize;
+    Mat4 finalScale = Mat4_GetScaleMatrix(scale);
+    float scaleY = 0.f;
 
     // Centre l'objet en (0,0,0) et applique l'échelle
     Mat4 objectTransform = Mat4_Identity;
     objectTransform = Mat4_GetTranslationMatrix(Vec3_Neg(mesh->m_center));
-    objectTransform = Mat4_MulMM(Mat4_GetScaleMatrix(scale), objectTransform);
+    objectTransform = Mat4_MulMM(finalScale, objectTransform);
     Object_SetLocalTransform(object, objectTransform);
 
     // Lancement du temps global
     Timer_Start(g_time);
 
     // Paramètre initiaux de la caméra
-    float camDistance = 7.3f;
+    float camDistance = 10.f;
     float angleY = 0.0f;
 
     float fpsAccu = 0.0f;
     int frameCount = 0;
 
+    bool objectJump = false;
 
     float rotatingSpeed = 0.f;
+    bool rotating = true;
+
     bool quit = false;
+
+    // variables pour le saut 
+    float jumpVelocity = 5.f;
+    float gravity = -9.81f;
+    Mat4 toadTransform = objectTransform;
+    Vec4 toadPosition = objectTransform.lines[0];
+    float nextYPos = toadPosition.y;
+    bool splosh = false;
+    Timer* sploshTime = Timer_New();
     while (!quit)
     {
         SDL_Event evt;
         SDL_Scancode scanCode;
         // Met à jour le temps global
         Timer_Update(g_time);
-
         while (SDL_PollEvent(&evt))
         {
             switch (evt.type)
@@ -126,23 +140,39 @@ int main(int argc, char *argv[])
                     changeLightReturn(BLINNPHONG);
                     break;
                 case SDL_SCANCODE_RIGHT:
-                    rotatingSpeed -= 0.5f;
+                    rotatingSpeed += 1.f;
                     break;
                 case SDL_SCANCODE_LEFT:
-                    rotatingSpeed += 0.5f;
+                    rotatingSpeed -= 1.f;
+                    break;
+                case SDL_SCANCODE_UP:
+                    objectJump = true;
+                    break;
+                case SDL_SCANCODE_DOWN:
+                    rotatingSpeed = 0.f;
+                    break;
+                case SDL_SCANCODE_P:
+                    rotating = rotating == true ? false : true;
+                    break;
+                case SDL_SCANCODE_C:
+                    camDistance = 10.f;
                     break;
                 default:
                     break;
                 }
                 break;
-
+            case SDL_MOUSEWHEEL:
+                if (evt.wheel.y > 0)
+                    camDistance -= 0.5f;
+                else
+                    camDistance += 0.5f;
             default:
                 break;
             }
         }
 
         // Calcule la rotation de la caméra
-        angleY -= rotatingSpeed * (360.f / 40.f * Timer_GetDelta(g_time));
+        angleY -= rotating ? rotatingSpeed * (360.f / 40.f * Timer_GetDelta(g_time)) : 0.f;
 
         // Calcule la matrice locale de la caméra
         Mat4 cameraModel = Mat4_Identity;
@@ -173,6 +203,37 @@ int main(int argc, char *argv[])
             fpsAccu = 0.0f;
             frameCount = 0;
         }
+        Timer_GetDelta(g_time);
+        // Calcule à chaque frame la nouvelle position du Toad durant le saut
+        if (objectJump)
+        {
+            float delta = Timer_GetDelta(g_time);
+            nextYPos += jumpVelocity * delta;
+            jumpVelocity += gravity * delta;
+            if (nextYPos < toadPosition.y)
+            {
+                scaleY = -1.f;
+                Timer_Start(sploshTime);
+                jumpVelocity = 5.f;
+                splosh = true;
+                objectJump = false;
+                nextYPos = 0.f;
+            }
+        }
+        if (splosh)
+            Timer_Update(sploshTime);
+        if (Timer_GetElapsed(sploshTime) > 2.f)
+        {
+            scaleY = 0.f;
+            splosh = false;
+        }
+
+        float currentScaleY = Mat4_GetScaleMatrix(scale).data[1][1] + scaleY;
+        finalScale.data[1][1] = currentScaleY;
+        objectTransform = Mat4_GetTranslationMatrix(Vec3_Neg(mesh->m_center));
+        objectTransform = Mat4_MulMM(finalScale, objectTransform);
+
+        Object_SetLocalTransform(object, Mat4_MulMM(objectTransform, Mat4_GetTranslationMatrix(Vec3_Set(0.f, nextYPos, 0.f))));
     }
 
     Scene_Free(scene);

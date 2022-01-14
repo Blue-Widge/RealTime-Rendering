@@ -1,6 +1,10 @@
 ﻿cl : command line warning D9035: option 'Gm' has been deprecated and will be removed in a future release
   main.c
-D:\Codes\RealTimeRendering\RealTimeRendering_Basecode\RealTimeRendering\main.c(120,38): warning C4013: 'changeLightReturn' undefined; assuming extern returning int
-D:\Codes\RealTimeRendering\RealTimeRendering_Basecode\RealTimeRendering\main.c(55,10): warning C4101: 'meshCenter': unreferenced local variable
-  LINK : /LTCG specified but no code generation required; remove /LTCG from the link command line to improve linker performance
+D:\Codes\RealTimeRendering\RealTimeRendering_Basecode\RealTimeRendering\main.c(56,10): warning C4101: 'meshCenter': unreferenced local variable
+D:\Codes\RealTimeRendering\RealTimeRendering_Basecode\RealTimeRendering\main.c(93,10): warning C4101: 'toadTransform': unreferenced local variable
+  Generating code
+  1 of 118 functions ( 0.8%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    1 functions had inline decision re-evaluated but remain unchanged
+  Finished generating code
   RealTimeRendering.vcxproj -> D:\Codes\RealTimeRendering\RealTimeRendering_Basecode\Bin\RealTimeRendering.exe

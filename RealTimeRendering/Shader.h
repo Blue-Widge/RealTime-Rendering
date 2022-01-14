@@ -11,7 +11,8 @@ enum LightReturn_e
 {
     ALBEDO,
     DIFFUSAL,
-    BLINNPHONG
+    BLINNPHONG,
+    NORMAL_MAP
 };
 
 typedef struct Scene_s Scene;
@@ -115,5 +116,5 @@ VShaderOut VertexShader_Base(VShaderIn *in, VShaderGlobals *globals);
 
 Vec4 FragmentShader_Base(FShaderIn *in, FShaderGlobals *globals);
 
-void changeReturnLight(int input);
+void changeLightReturn(int input);
 #endif

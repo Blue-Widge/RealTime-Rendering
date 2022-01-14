@@ -13,7 +13,6 @@ static ObjectVMT ObjectVMT_Camera = {
 int Camera_Init(Camera *camera, Scene *scene, Mat4 localTransform, Object *parent)
 {
     assert(camera && scene);
-
     int exitStatus = Object_Init(
         (Object *)camera, scene, localTransform, parent);
     if (exitStatus != EXIT_SUCCESS) goto ERROR_LABEL;
